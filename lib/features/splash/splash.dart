@@ -102,10 +102,13 @@
 //     );
 //   }
 // }
+
+//===================================================================================================
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:simphony/features/homepage/bottom_nav.dart';
+import 'package:simphony/features/library/logic/library_functions.dart';
 import 'package:simphony/features/login/locgic/shared_pref_services.dart';
 import 'package:simphony/features/login/login.dart';
 
@@ -123,15 +126,25 @@ class _SplashScreenState extends State<SplashScreen> {
     goToLogin();
   }
 
+  Future<void> initDatabase() async {
+    print("intit data called....................................");
+    await storeSongs();
+    await getSongs();
+  }
+
   //=============================================
 
   Future<void> goToLogin() async {
     await permissionStatusChecker();
+    await initDatabase();
 
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
         builder: (ctx) => SharedprefServices.isNameStored()
             ? const BottomNav()
-            : LoginScreen(),),);
+            : LoginScreen(),
+      ),
+    );
   }
 
   //===================================================================
@@ -178,18 +191,13 @@ class _SplashScreenState extends State<SplashScreen> {
     return match != null ? int.parse(match.group(1)!) : 0;
   }
 
-  //======================================================================================Build Function====================
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
         child: Center(
-          child: Icon(
-            Icons.music_note,
-            color: Colors.red,
-            size: 100,
-          ),
+          child: Image.asset("assets/image/appicon.png"),
         ),
       ),
     );

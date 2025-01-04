@@ -15,54 +15,56 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: () {}, icon: Icon(Icons.arrow_back)),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop(); // Navigate back
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
+        title: const Text('Settings'),
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              flex: 1,
-              child: ListTile(
-                leading: ValueListenableBuilder<ThemeMode>(
-                  valueListenable: themeNotifier,
-                  builder: (BuildContext ctx, newTheme, _) {
-                    return IconButton(
-                      onPressed: () {
-                        themeNotifier.value =
-                            themeNotifier.value == ThemeMode.light
-                                ? ThemeMode.dark
-                                : ThemeMode.light;
-                      },
-                      icon: newTheme == ThemeMode.light
-                          ? const Icon(
-                              Icons.dark_mode,
-                              size: 25,
-                            )
-                          : const Icon(
-                              Icons.light_mode,
-                              size: 25,
-                            ),
-                    );
-                  },
-                ),
-                title: Text("ThemeMode"),
+            // Theme Switcher
+            ListTile(
+              leading: ValueListenableBuilder<ThemeMode>(
+                valueListenable: themeNotifier,
+                builder: (BuildContext ctx, newTheme, _) {
+                  return IconButton(
+                    onPressed: () {
+                      themeNotifier.value =
+                          themeNotifier.value == ThemeMode.light
+                              ? ThemeMode.dark
+                              : ThemeMode.light;
+                    },
+                    icon: newTheme == ThemeMode.light
+                        ? const Icon(Icons.dark_mode, size: 25)
+                        : const Icon(Icons.light_mode, size: 25),
+                  );
+                },
               ),
+              title: const Text("Theme Mode"),
             ),
-            const Expanded(
-                flex: 1,
-                child: ListTile(
-                  leading: Icon(Icons.settings),
-                  title: Text("Settings"),
-                )),
-            const Expanded(
-              flex: 1,
-              child: ListTile(
-                leading: Icon(Icons.lock),
-                title: Text("Privacy Policy"),
-              ),
+
+            // Settings Option
+            const ListTile(
+              leading: Icon(Icons.settings),
+              title: Text("Settings"),
             ),
-            GestureDetector(
+
+            // Privacy Policy Option
+            const ListTile(
+              leading: Icon(Icons.lock),
+              title: Text("Privacy Policy"),
+            ),
+
+            // Logout Option
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text("Log out"),
               onTap: () {
                 showDialog(
                   context: context,
@@ -82,15 +84,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const SplashScreen()
-                                  // const OnBoardingPage(),
-                                  ),
-                              (route) => false, // Retains only the first route
+                                  builder: (context) => const SplashScreen()),
+                              (route) => false,
                             );
-                            //  await Helper.player.pause();
                             SharedprefServices.clearAll();
-                            // Perform logout action
-                            // Navigator.of(context).pop();
                           },
                           child: const Text("Logout"),
                         ),
@@ -99,18 +96,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   },
                 );
               },
-              child: const Expanded(
-                flex: 1,
-                child: ListTile(
-                  leading: Icon(Icons.logout),
-                  title: Text("Log out"),
-                ),
-              ),
             ),
-            const Expanded(
-              flex: 7,
-              child: SizedBox(),
-            ),
+
+            // Spacer for remaining space
+            const Spacer(),
           ],
         ),
       ),

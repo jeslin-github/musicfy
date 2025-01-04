@@ -1,51 +1,35 @@
 import 'package:flutter/material.dart';
-
-// class LibraryScreen extends StatelessWidget {
-//   const LibraryScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Container(
-//         child: Center(child: Text("library ")),
-//       ),
-//     );
-//   }
-// }
-
-
-
+import 'package:simphony/common/model/musicfy_song_model.dart';
+import 'package:simphony/features/library/logic/library_functions.dart';
+import 'song_card.dart';
 
 
 class LibraryScreen extends StatelessWidget {
-  final List<Map<String, String>> songs = [
-    {'title': 'Never', 'artist': 'Heart . VEVO'},
-    {'title': 'Always', 'artist': 'Soul . VEVO'},
-    {'title': 'Forever', 'artist': 'Band . VEVO'},
-    {'title': 'Echo', 'artist': 'Sound . VEVO'},
-    {'title': 'Shine', 'artist': 'Light . VEVO'},
-    {'title': 'Glow', 'artist': 'Radiance . VEVO'},
-  ];
+  const LibraryScreen({super.key});
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:const Color(0xFF3F2F77),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white), // White back arrow
+          icon: const Icon(
+            Icons.arrow_back,
+          ), // White back arrow
           onPressed: () {
             Navigator.pop(context); // Go back to the previous screen
           },
         ),
         title: const Text(
           'All Songs',
-          style: TextStyle(color: Colors.white), // White title
+          // White title
         ),
         actions: [
           IconButton(
-            icon:
-                const Icon(Icons.shuffle, color: Colors.white), // White shuffle icon
+            icon: const Icon(
+              Icons.shuffle,
+            ), // White shuffle icon
             onPressed: () {
               // Shuffle action
             },
@@ -57,57 +41,48 @@ class LibraryScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
-              style: const TextStyle(color: Colors.white), // White text for input
+              // White text for input
               decoration: InputDecoration(
                 hintText: 'Search a Music',
-                hintStyle: const TextStyle(color: Colors.white54), // White hint text
-                prefixIcon:
-                    const Icon(Icons.search, color: Colors.white), // White icon
+                // White hint text
+                prefixIcon: const Icon(
+                  Icons.search,
+                ), // White icon
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius:
+                      BorderRadius.circular(20), //todo change text field design
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: const BorderSide(color: Colors.white), // White border
+                  // White border
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: const BorderSide(color: Colors.white), // White border
+                  // White border
                 ),
               ),
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: songs.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  child: ListTile(
-                    leading: const CircleAvatar(
-                      backgroundColor: Color(0xFF6A5BAA),
-                      child: Icon(Icons.music_note, color: Colors.white),
-                    ),
-                    title: Text(
-                      songs[index]['title']!,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    subtitle: Text(
-                      songs[index]['artist']!,
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                    trailing: const Icon(Icons.more_vert, color: Colors.white),
-                    onTap: () {
-                      // Navigate to now playing or details
+            child: ValueListenableBuilder<List<MusicfySongModel>>(
+                valueListenable: songsListNotifier,
+                builder: (BuildContext ctx, List<MusicfySongModel> songs, _) {
+                   if (songs.isEmpty) {
+                      return const Center(child: Text("Nothing found!"));
+                    }
+                  return ListView.builder(
+                    itemCount: songs.length,
+                    itemBuilder: (context, index) {
+                      final song = songs[index];
+                      return GestureDetector(
+                        child: SongCard(song: song),
+                      );
                     },
-                  ),
-                );
-              },
-            ),
+                  );
+                }),
           ),
         ],
       ),
-      backgroundColor:  const Color(0xFF3F2F77),
     );
   }
 }
-
